@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Secrets — only .env.example is committed
+.env
+
+# Playwright output
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
