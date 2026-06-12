@@ -1,4 +1,4 @@
-import type { Locator, Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import type { AiraloApiClient } from '../services/airalo-api-client';
 import { BasePage } from './base.page';
 import { plansLocators } from './locators/plans.locators';
@@ -59,10 +59,50 @@ export class PlansPage extends BasePage {
     return plansLocators.packageCardPrice(this.page, validity);
   }
 
-  /** Find and click the package with the given validity. */
-  async selectPackage(validity: string): Promise<void> {
-    await this.step(`select the ${validity} package`, async () => {
+  /** Verify the plans page for a destination is open (URL + heading). */
+  async expectLoadedFor(destination: string): Promise<void> {
+    await this.step(`verify plans page for ${destination} is open`, async () => {
+      await expect(this.page, `Should land on the ${destination} plans page`).toHaveURL(
+        this.urlFor(destination),
+      );
+      await expect(
+        this.heading,
+        'Plans page heading should name the destination',
+      ).toHaveText(new RegExp(`${destination} eSIMs`, 'i'));
+    });
+  }
+
+  /**
+   * Find and click the package with the given validity, verifying it is
+   * offered first. Returns the price advertised on the card (e.g. "£21.00")
+   * so callers can compare it against what checkout shows.
+   */
+  async selectPackage(validity: string): Promise<string> {
+    return this.step(`select the ${validity} package`, async () => {
+      await expect(
+        this.packageCard(validity),
+        `A ${validity} package should be offered on this plans page`,
+      ).toBeVisible();
+      const advertisedPrice = (await this.packagePrice(validity).innerText()).trim();
       await this.packageCard(validity).click();
+      return advertisedPrice;
+    });
+  }
+
+  /**
+   * Verify the checkout bar is shown and the Total next to "Package details"
+   * matches the expected price (as advertised on the package card).
+   */
+  async expectPackageDetailsPrice(expectedPrice: string): Promise<void> {
+    await this.step(`verify package details total is ${expectedPrice}`, async () => {
+      await expect(
+        this.packageDetailsButton,
+        'Package details should be shown after selecting a package',
+      ).toBeVisible();
+      await expect(
+        this.packageDetailsTotalPrice,
+        'Total next to Package details should match the advertised package price',
+      ).toHaveText(expectedPrice);
     });
   }
 }

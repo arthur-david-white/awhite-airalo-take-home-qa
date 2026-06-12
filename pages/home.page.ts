@@ -45,6 +45,23 @@ export class HomePage extends BasePage {
     });
   }
 
+  /**
+   * Verify the search dropdown is open and the destination is listed,
+   * identified by its flag image.
+   */
+  async expectSearchResultWithFlag(destination: string): Promise<void> {
+    await this.step(`verify "${destination}" is listed with its flag`, async () => {
+      await expect(
+        this.searchResults,
+        'Search dropdown should open with destination results',
+      ).toBeVisible();
+      await expect(
+        this.searchResultFlag(destination),
+        `${destination} should appear in the search results with its flag`,
+      ).toBeVisible();
+    });
+  }
+
   /** Click a destination in the search results dropdown. */
   async selectSearchResult(destination: string): Promise<void> {
     await this.step(`select "${destination}" from search results`, async () => {

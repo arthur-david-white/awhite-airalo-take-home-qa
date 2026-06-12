@@ -1,5 +1,6 @@
 import { test, type Page } from '@playwright/test';
 import type { AiraloApiClient } from '../services/airalo-api-client';
+import { baseLocators } from './locators/base.locators';
 
 /**
  * Base class for all Airalo page objects.
@@ -40,17 +41,20 @@ export abstract class BasePage {
   }
 
   /**
-   * Best-effort dismissal of Airalo's cookie consent banner. The banner is
-   * environment/region dependent, so its absence is never a failure — we
-   * wait briefly and move on if it doesn't show up.
+   * Dismiss Airalo's OneTrust cookie consent banner and wait until it has
+   * fully cleared before continuing, so it can never overlap later actions.
+   * The banner is environment/region dependent, so its absence is never a
+   * failure — but once we click Accept, it MUST disappear.
    */
-  async dismissCookieBanner(timeoutMs = 3_000): Promise<void> {
-    const accept = this.page.getByRole('button', { name: /accept/i }).first();
+  async dismissCookieBanner(timeoutMs = 5_000): Promise<void> {
+    const banner = baseLocators.cookieBanner(this.page);
+    const accept = baseLocators.cookieAcceptButton(this.page);
     try {
       await accept.waitFor({ state: 'visible', timeout: timeoutMs });
-      await accept.click();
     } catch {
-      // Banner not shown (already accepted, or region without consent prompt).
+      return; // Banner not shown (already accepted, or region without consent prompt).
     }
+    await accept.click();
+    await banner.waitFor({ state: 'hidden', timeout: timeoutMs });
   }
 }

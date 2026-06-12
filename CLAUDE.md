@@ -44,7 +44,9 @@ API tests need `AIRALO_CLIENT_ID` / `AIRALO_CLIENT_SECRET` in `.env`
   inline in page classes or specs. Page functions are generic — take the
   search term / destination / package validity as parameters, no hardcoded
   "Japan" in page objects.
-- Assertions belong in specs, not page objects.
+- Keep test logic out of specs: reusable verification lives in page-object
+  `expect*` methods (with meaningful assertion messages); specs orchestrate
+  the steps and read as the scenario.
 - Service objects call `AiraloApiClient`, never `APIRequestContext` directly.
 - No thin wrappers around `locator.click()/fill()` in page objects; expose
   `Locator`s and use Playwright's API. BasePage helpers are for genuinely
