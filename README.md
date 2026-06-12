@@ -92,3 +92,10 @@ The repo ships agent tooling for Claude Code under `.claude/`:
   justified and flagged), checks `pages/CLAUDE.md` / `tests/CLAUDE.md` for
   existing functions to reuse, flags coverage overlap, and verifies with
   typecheck + repeated runs.
+- **/create-api-test** (`.claude/skills/create-api-test/SKILL.md`) — give it
+  a specific set of API requests (endpoints, data, expected validations) and
+  it produces service objects, fixtures and a spec validating status codes,
+  response messages and bodies. It reuses existing services first
+  (`services/CLAUDE.md`), verifies endpoint shapes against the official
+  Airalo docs when unsure, asks for clarification rather than guessing vague
+  scenarios, and is careful with endpoints that create real orders.

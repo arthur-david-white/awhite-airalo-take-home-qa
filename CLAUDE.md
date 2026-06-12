@@ -11,10 +11,15 @@ Partner API, as two independent Playwright projects in one repo.
   detailed set of manual test steps into an automated UI test following the
   repo architecture (locator policy enforced, live-app exploration, reuse
   checks against `pages/CLAUDE.md` and `tests/CLAUDE.md`).
+- `.claude/skills/create-api-test/SKILL.md` — **/create-api-test**: turns a
+  specific set of API requests into an automated Partner API test (reuses
+  service objects first, verifies endpoint shapes against the official docs
+  when unsure, asks the requester to clarify vague scenarios, validates
+  status/message/body).
 - Directory inventories: `pages/CLAUDE.md` (page objects, functions,
-  locators) and `tests/CLAUDE.md` (specs and coverage). Keep them current
-  whenever pages or specs change — agents rely on them to avoid duplicating
-  code.
+  locators), `services/CLAUDE.md` (API client, services, fixtures) and
+  `tests/CLAUDE.md` (specs and coverage). Keep them current whenever pages,
+  services or specs change — agents rely on them to avoid duplicating code.
 
 ## Commands
 

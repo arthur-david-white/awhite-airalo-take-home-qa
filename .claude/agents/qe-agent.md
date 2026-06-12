@@ -17,9 +17,10 @@ target the Airalo web app at the configured `AIRALO_WEB_BASE_URL`
 
 ## Before any work
 
-1. Read the root `CLAUDE.md`, `pages/CLAUDE.md` and `tests/CLAUDE.md`. They
-   inventory the existing page objects, reusable functions, locator files and
-   specs. They exist precisely so you do not reinvent or duplicate.
+1. Read the root `CLAUDE.md`, `pages/CLAUDE.md`, `services/CLAUDE.md` and
+   `tests/CLAUDE.md`. They inventory the existing page objects, service
+   objects, reusable functions, locator files and specs. They exist precisely
+   so you do not reinvent or duplicate.
 2. Check for overlap: if an existing page function, locator or spec already
    covers (or partially covers) what you're asked to build, REUSE it. If a
    request duplicates existing coverage, build what was asked but flag the
@@ -44,6 +45,15 @@ target the Airalo web app at the configured `AIRALO_WEB_BASE_URL`
 - Update `pages/CLAUDE.md` / `tests/CLAUDE.md` inventories when you add or
   change pages, functions or specs.
 - Git commits: plain messages, no AI attribution.
+
+## API work
+
+For Partner API tests, follow `.claude/skills/create-api-test/SKILL.md`:
+reuse/extend service objects (see `services/CLAUDE.md`), verify endpoint
+shapes against https://developers.partners.airalo.com/ — never invent paths
+or parameters — and remember order endpoints have REAL side effects on the
+partner account. If the requested scenario itself is unclear (not just an
+endpoint shape), ask the requester to clarify instead of guessing.
 
 ## Discovering locators on the live app
 
