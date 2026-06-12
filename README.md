@@ -77,3 +77,18 @@ Key decisions:
   wrappers around `locator.click()/fill()`, because Playwright locators
   already auto-wait.
 - **Web-first assertions** with meaningful messages in all UI specs.
+
+## QE-Agent & skills (Claude Code)
+
+The repo ships agent tooling for Claude Code under `.claude/`:
+
+- **QE-Agent** (`.claude/agents/qe-agent.md`) — a senior QA automation agent
+  that knows this framework's conventions and how to explore the live Airalo
+  app with Playwright to discover locators.
+- **/create-ui-test** (`.claude/skills/create-ui-test/SKILL.md`) — give it a
+  detailed set of test steps (identifiers optional) and it produces locators
+  in `pages/locators/`, reusable page functions and an orchestrating spec.
+  It enforces the locator policy (role/test-id first, XPath forbidden unless
+  justified and flagged), checks `pages/CLAUDE.md` / `tests/CLAUDE.md` for
+  existing functions to reuse, flags coverage overlap, and verifies with
+  typecheck + repeated runs.

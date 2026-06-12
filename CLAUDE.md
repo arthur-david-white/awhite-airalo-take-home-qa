@@ -3,6 +3,19 @@
 Playwright + TypeScript framework testing Airalo: the website (UI) and the
 Partner API, as two independent Playwright projects in one repo.
 
+## Agent & skills
+
+- `.claude/agents/qe-agent.md` — **QE-Agent**: senior QA automation agent for
+  this repo. Delegate test-creation/extension work to it.
+- `.claude/skills/create-ui-test/SKILL.md` — **/create-ui-test**: turns a
+  detailed set of manual test steps into an automated UI test following the
+  repo architecture (locator policy enforced, live-app exploration, reuse
+  checks against `pages/CLAUDE.md` and `tests/CLAUDE.md`).
+- Directory inventories: `pages/CLAUDE.md` (page objects, functions,
+  locators) and `tests/CLAUDE.md` (specs and coverage). Keep them current
+  whenever pages or specs change — agents rely on them to avoid duplicating
+  code.
+
 ## Commands
 
 ```bash
