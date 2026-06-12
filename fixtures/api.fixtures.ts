@@ -2,7 +2,9 @@ import { test as base, type APIRequestContext } from '@playwright/test';
 import { airaloEnv } from '../env';
 import { AiraloApiClient } from '../services/airalo-api-client';
 import { fetchAiraloAccessToken } from '../services/airalo-auth';
+import { OrdersService } from '../services/orders.service';
 import { PackagesService } from '../services/packages.service';
+import { SimsService } from '../services/sims.service';
 
 export interface ApiWorkerFixtures {
   /**
@@ -21,6 +23,10 @@ export interface ApiFixtures {
   api: AiraloApiClient;
   /** Example service object (see services/packages.service.ts). */
   packagesApi: PackagesService;
+  /** Order endpoints (submit order). */
+  ordersApi: OrdersService;
+  /** eSIM endpoints (get eSIM details). */
+  simsApi: SimsService;
 }
 
 export const test = base.extend<ApiFixtures, ApiWorkerFixtures>({
@@ -69,5 +75,13 @@ export const test = base.extend<ApiFixtures, ApiWorkerFixtures>({
 
   packagesApi: async ({ api }, use) => {
     await use(new PackagesService(api));
+  },
+
+  ordersApi: async ({ api }, use) => {
+    await use(new OrdersService(api));
+  },
+
+  simsApi: async ({ api }, use) => {
+    await use(new SimsService(api));
   },
 });

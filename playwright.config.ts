@@ -41,6 +41,9 @@ export default defineConfig({
     {
       name: 'api',
       testDir: './tests/api',
+      // Generous timeout: the Partner API rate-limits per endpoint and the
+      // client waits out Retry-After delays before retrying.
+      timeout: 300_000,
       use: {
         // No browserName here on purpose — this project never launches a
         // browser; tests talk to the Partner API via APIRequestContext only.

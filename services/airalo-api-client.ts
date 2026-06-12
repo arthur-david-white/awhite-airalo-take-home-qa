@@ -9,8 +9,16 @@ export interface SendOptions {
   data?: unknown;
   /** application/x-www-form-urlencoded body (Airalo uses this for OAuth-style calls). */
   form?: Record<string, string>;
+  /** multipart/form-data body (Airalo's order endpoints document this shape). */
+  multipart?: Record<string, string | number | boolean>;
   /** Extra headers, merged over (and able to override) the client defaults. */
   headers?: Record<string, string>;
+  /**
+   * How many times to retry when Airalo rate-limits the request (HTTP 429),
+   * honouring the Retry-After header. Set to 0 for tests that assert 429
+   * behaviour itself. Default: 3.
+   */
+  rateLimitRetries?: number;
 }
 
 export interface AiraloApiClientOptions {
@@ -54,22 +62,40 @@ export class AiraloApiClient {
     }
 
     const url = `${baseURL.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
-    try {
-      return await this.context.fetch(url, {
-        method,
-        params: options.params,
-        data: options.data,
-        form: options.form,
-        headers: {
-          Accept: 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-          ...options.headers,
-        },
-      });
-    } catch (error) {
-      throw new Error(
-        `Airalo API request failed: ${method} ${url} — ${(error as Error).message}`,
-      );
+    const rateLimitRetries = options.rateLimitRetries ?? 3;
+
+    for (let attempt = 0; ; attempt++) {
+      let response: APIResponse;
+      try {
+        response = await this.context.fetch(url, {
+          method,
+          params: options.params,
+          data: options.data,
+          form: options.form,
+          multipart: options.multipart,
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+            ...options.headers,
+          },
+        });
+      } catch (error) {
+        throw new Error(
+          `Airalo API request failed: ${method} ${url} — ${(error as Error).message}`,
+        );
+      }
+
+      if (response.status() !== 429 || attempt >= rateLimitRetries) {
+        return response;
+      }
+
+      // Airalo rate-limits per endpoint; wait for the advertised Retry-After
+      // (falling back to an increasing delay) and try again.
+      const retryAfterSeconds = Number(response.headers()['retry-after']);
+      const delayMs = Number.isFinite(retryAfterSeconds)
+        ? retryAfterSeconds * 1_000
+        : 15_000 * (attempt + 1);
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
     }
   }
 
