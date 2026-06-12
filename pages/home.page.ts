@@ -62,6 +62,23 @@ export class HomePage extends BasePage {
     });
   }
 
+  /**
+   * Verify the search dropdown is open and reports "No results" — used for
+   * invalid or unmatched search terms.
+   */
+  async expectNoSearchResults(): Promise<void> {
+    await this.step('verify search reports "No results"', async () => {
+      await expect(
+        this.searchResults,
+        'Search dropdown should open even for an unmatched term',
+      ).toBeVisible();
+      await expect(
+        homeLocators.searchNoResults(this.page),
+        'Dropdown should show "No results" for an unmatched search term',
+      ).toBeVisible();
+    });
+  }
+
   /** Click a destination in the search results dropdown. */
   async selectSearchResult(destination: string): Promise<void> {
     await this.step(`select "${destination}" from search results`, async () => {

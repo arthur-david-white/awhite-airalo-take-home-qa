@@ -20,4 +20,8 @@ export const homeLocators = {
   /** Flag image shown beside a destination in the search dropdown. */
   searchResultFlag: (page: Page, destination: string): Locator =>
     homeLocators.searchResults(page).locator(`img[alt="${destination}"]`),
+
+  /** "No results" message shown in the dropdown for an unmatched search term. */
+  searchNoResults: (page: Page): Locator =>
+    homeLocators.searchResults(page).getByText('No results', { exact: true }),
 };
