@@ -1,8 +1,10 @@
 import { HomePage } from '../pages/home.page';
+import { PlansPage } from '../pages/plans.page';
 import { test as apiTest } from './api.fixtures';
 
 export interface PageFixtures {
   homePage: HomePage;
+  plansPage: PlansPage;
 }
 
 /**
@@ -13,5 +15,8 @@ export interface PageFixtures {
 export const test = apiTest.extend<PageFixtures>({
   homePage: async ({ page, api }, use) => {
     await use(new HomePage(page, api));
+  },
+  plansPage: async ({ page, api }, use) => {
+    await use(new PlansPage(page, api));
   },
 });

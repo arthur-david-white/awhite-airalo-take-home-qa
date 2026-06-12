@@ -1,0 +1,23 @@
+import type { Locator, Page } from '@playwright/test';
+
+/**
+ * Identifiers for the Airalo home page. Locators live here; behaviour lives
+ * in pages/home.page.ts.
+ */
+export const homeLocators = {
+  /** Hero search box ("Where do you need an eSIM?"). */
+  searchInput: (page: Page): Locator => page.getByRole('textbox', { name: 'Search store' }),
+
+  /** Dropdown of destination results that opens under the search box. */
+  searchResults: (page: Page): Locator => page.getByRole('listbox'),
+
+  /** A destination entry (link) in the search dropdown, matched by its flag image. */
+  searchResult: (page: Page, destination: string): Locator =>
+    homeLocators
+      .searchResults(page)
+      .locator('a', { has: page.locator(`img[alt="${destination}"]`) }),
+
+  /** Flag image shown beside a destination in the search dropdown. */
+  searchResultFlag: (page: Page, destination: string): Locator =>
+    homeLocators.searchResults(page).locator(`img[alt="${destination}"]`),
+};

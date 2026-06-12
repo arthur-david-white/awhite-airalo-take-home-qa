@@ -29,7 +29,9 @@ API tests need `AIRALO_CLIENT_ID` / `AIRALO_CLIENT_SECRET` in `.env`
   `airalo-auth.ts` (token exchange, endpoint verified against Airalo docs),
   one service object per API area (see `packages.service.ts`).
 - `pages/` — `BasePage` + page objects. Page objects receive the `api` client
-  via constructor injection from the fixture.
+  via constructor injection from the fixture. Identifiers live in
+  `pages/locators/*.locators.ts` (one file per page, locator factory
+  functions); page classes hold behaviour only.
 - `tests/ui/`, `tests/api/` — specs import from `../../fixtures`, never
   `@playwright/test` directly.
 
@@ -38,6 +40,11 @@ API tests need `AIRALO_CLIENT_ID` / `AIRALO_CLIENT_SECRET` in `.env`
 - Strict TypeScript; path aliases `@pages/*`, `@services/*`, `@fixtures/*`, `@env`.
 - Never hardcode URLs or credentials — everything comes from `env.ts`.
 - Never `new SomePage(page)` in specs — add a fixture in `pages.fixtures.ts`.
+- Locators (selectors, test ids, roles/names) go in `pages/locators/`, never
+  inline in page classes or specs. Page functions are generic — take the
+  search term / destination / package validity as parameters, no hardcoded
+  "Japan" in page objects.
+- Assertions belong in specs, not page objects.
 - Service objects call `AiraloApiClient`, never `APIRequestContext` directly.
 - No thin wrappers around `locator.click()/fill()` in page objects; expose
   `Locator`s and use Playwright's API. BasePage helpers are for genuinely

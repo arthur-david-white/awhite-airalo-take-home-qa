@@ -47,11 +47,13 @@ env.ts                 # .env loading; the single source of Airalo env values
   airalo-api-client.ts #   AiraloApiClient: single send() core + get/post/put/patch/delete
   airalo-auth.ts       #   OAuth2 client_credentials exchange (POST /v2/token)
   packages.service.ts  #   example service object pattern
-/pages/                # UI layer (Page Object Model)
+/pages/                # UI layer (Page Object Model) — behaviour only
   base.page.ts         #   BasePage: navigation, logged steps, cookie banner; holds api handle
-  home.page.ts         #   example page object
-/tests/ui/             # UI specs (smoke only for now)
-/tests/api/            # API specs (smoke only for now)
+  home.page.ts         #   home page: generic search functions
+  plans.page.ts        #   destination plans page: generic package selection + prices
+  locators/            #   identifiers, one file per page (locator factories)
+/tests/ui/             # UI specs (assertions live here)
+/tests/api/            # API specs
 ```
 
 Key decisions:
