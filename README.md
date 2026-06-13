@@ -11,20 +11,39 @@ maps to the code, and [prompts.md](prompts.md) for the prompts used to build it.
 ## Setup
 
 ```bash
-npm install
-npx playwright install chromium
-cp .env.example .env   # then fill in AIRALO_CLIENT_ID / AIRALO_CLIENT_SECRET
+npm install                    # install dependencies (uses the committed package-lock.json)
+npx playwright install chromium # download the browser the ui suite uses
 ```
 
-All base URLs and credentials come from `.env` (see `.env.example`). The real
-`.env` is gitignored - never commit credentials.
+### Configure credentials (create your own `.env`)
 
-| Variable | Purpose | Default |
-| --- | --- | --- |
-| `AIRALO_WEB_BASE_URL` | Airalo website under test | `https://www.airalo.com` |
-| `AIRALO_API_BASE_URL` | Partner API root (incl. `/v2`) | `https://partners-api.airalo.com/v2` |
-| `AIRALO_CLIENT_ID` | OAuth2 client id | - (required for API) |
-| `AIRALO_CLIENT_SECRET` | OAuth2 client secret | - (required for API) |
+This repo ships **no credentials** - the real `.env` is gitignored. You create
+your own from the committed [`.env.example`](.env.example) template:
+
+```bash
+cp .env.example .env           # macOS / Linux / Git Bash
+# Windows PowerShell:  Copy-Item .env.example .env
+# Windows cmd:         copy .env.example .env
+```
+
+Then open `.env` and fill in your Airalo Partner API credentials:
+
+```ini
+AIRALO_CLIENT_ID=your_client_id_here
+AIRALO_CLIENT_SECRET=your_client_secret_here
+```
+
+The base URLs already have working defaults, so for the **UI suite you don't
+need to touch `.env` at all**. The **API suite requires** a valid
+`AIRALO_CLIENT_ID` / `AIRALO_CLIENT_SECRET` (the OAuth2 token exchange). All
+config is read once in [`env.ts`](env.ts) - never hardcode values in tests.
+
+| Variable | Purpose | Required | Default |
+| --- | --- | --- | --- |
+| `AIRALO_WEB_BASE_URL` | Airalo website under test | no | `https://www.airalo.com` |
+| `AIRALO_API_BASE_URL` | Partner API root (incl. `/v2`) | no | `https://partners-api.airalo.com/v2` |
+| `AIRALO_CLIENT_ID` | OAuth2 client id | **for API suite** | none |
+| `AIRALO_CLIENT_SECRET` | OAuth2 client secret | **for API suite** | none |
 
 ## Running tests
 
