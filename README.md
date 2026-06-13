@@ -155,3 +155,61 @@ The repo ships agent tooling for Claude Code under `.claude/`:
   (`services/CLAUDE.md`), verifies endpoint shapes against the official
   Airalo docs when unsure, asks for clarification rather than guessing vague
   scenarios, and is careful with endpoints that create real orders.
+
+### Try it — example prompts
+
+Run these inside Claude Code (in this repo) to generate new tests. Each skill
+explores/verifies, writes into the right layers, runs the result, and reports
+back. Copy a line, tweak the specifics, and send it.
+
+**`/create-ui-test`** — describe the journey as steps (identifiers optional;
+it discovers locators on the live site if you omit them):
+
+```text
+/create-ui-test Verify the language switcher:
+1. Open the Airalo website
+2. Open the language menu in the header
+3. Select French
+4. Verify the navigation menu items are now shown in French
+```
+
+```text
+/create-ui-test Search for a regional eSIM:
+1. Open the website
+2. Search for "Europe"
+3. Click the Europe result in the dropdown
+4. Verify the plans page heading reads "Europe eSIMs"
+5. Verify at least one data package is listed
+```
+
+```text
+/create-ui-test Standard (non-unlimited) package selection:
+1. Open the website, search "Japan", select the Japan result
+2. On the plans page, click the Standard data plan tab
+3. Select the 1 GB / 7 days package
+4. Verify the price next to the Buy now button matches the package card
+```
+
+**`/create-api-test`** — name the endpoint(s) and what to validate (it
+verifies the exact shape against the docs first):
+
+```text
+/create-api-test GET /v2/packages — list packages. Validate 200,
+meta.message is "success", and each package in data has an id, title and a
+non-empty operators/packages structure.
+```
+
+```text
+/create-api-test GET /v2/sims — the "Get eSIMs list" endpoint. Validate 200,
+meta.message "success", and that data is a paginated list of eSIMs each with
+an iccid.
+```
+
+```text
+/create-api-test https://partners-api.airalo.com/v2/compatible-devices-lite
+```
+
+> Tip: the more precise the expected results, the tighter the generated
+> assertions. Vague prompts make the skill ask you to clarify rather than
+> guess. Avoid order-creating endpoints (`POST /orders`) in throwaway
+> experiments — they place real orders on the partner account.
