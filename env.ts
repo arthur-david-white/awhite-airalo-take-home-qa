@@ -6,7 +6,7 @@ dotenv.config();
  * Airalo-specific environment configuration, loaded once from .env.
  *
  * Base URLs fall back to Airalo's real public hosts so a fresh clone works
- * out of the box; credentials intentionally have NO fallback — they must come
+ * out of the box; credentials intentionally have NO fallback - they must come
  * from the environment (see .env.example) and are never hardcoded.
  */
 export const airaloEnv = {

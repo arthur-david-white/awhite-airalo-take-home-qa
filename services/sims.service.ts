@@ -43,7 +43,7 @@ export interface GetEsimResponse {
 export class SimsService {
   constructor(private readonly client: AiraloApiClient) {}
 
-  /** GET /sims/{iccid} — retrieve one eSIM's details by ICCID. */
+  /** GET /sims/{iccid} - retrieve one eSIM's details by ICCID. */
   get(iccid: string, options?: { include?: string }): Promise<APIResponse> {
     return this.client.get(`/sims/${iccid}`, {
       params: options?.include ? { include: options.include } : undefined,

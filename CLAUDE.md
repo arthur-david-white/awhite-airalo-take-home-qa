@@ -5,13 +5,13 @@ Partner API, as two independent Playwright projects in one repo.
 
 ## Agent & skills
 
-- `.claude/agents/qe-agent.md` — **QE-Agent**: senior QA automation agent for
+- `.claude/agents/qe-agent.md` - **QE-Agent**: senior QA automation agent for
   this repo. Delegate test-creation/extension work to it.
-- `.claude/skills/create-ui-test/SKILL.md` — **/create-ui-test**: turns a
+- `.claude/skills/create-ui-test/SKILL.md` - **/create-ui-test**: turns a
   detailed set of manual test steps into an automated UI test following the
   repo architecture (locator policy enforced, live-app exploration, reuse
   checks against `pages/CLAUDE.md` and `tests/CLAUDE.md`).
-- `.claude/skills/create-api-test/SKILL.md` — **/create-api-test**: turns a
+- `.claude/skills/create-api-test/SKILL.md` - **/create-api-test**: turns a
   specific set of API requests into an automated Partner API test (reuses
   service objects first, verifies endpoint shapes against the official docs
   when unsure, asks the requester to clarify vague scenarios, validates
@@ -19,7 +19,7 @@ Partner API, as two independent Playwright projects in one repo.
 - Directory inventories: `pages/CLAUDE.md` (page objects, functions,
   locators), `services/CLAUDE.md` (API client, services, fixtures) and
   `tests/CLAUDE.md` (specs and coverage). Keep them current whenever pages,
-  services or specs change — agents rely on them to avoid duplicating code.
+  services or specs change - agents rely on them to avoid duplicating code.
 
 ## Commands
 
@@ -37,29 +37,29 @@ API tests need `AIRALO_CLIENT_ID` / `AIRALO_CLIENT_SECRET` in `.env`
 
 ## Structure
 
-- `playwright.config.ts` — central config; `ui` and `api` projects. `api`
+- `playwright.config.ts` - central config; `ui` and `api` projects. `api`
   deliberately omits `browserName` (pure APIRequestContext).
-- `env.ts` — the only place `.env` / `process.env` is read.
-- `fixtures/` — `api.fixtures.ts` (worker-scoped `airaloAuthToken` OAuth2
+- `env.ts` - the only place `.env` / `process.env` is read.
+- `fixtures/` - `api.fixtures.ts` (worker-scoped `airaloAuthToken` OAuth2
   exchange, `apiContext`, `api` client, `packagesApi`), `pages.fixtures.ts`
   (page objects), `index.ts` (the `test`/`expect` specs import).
-- `services/` — `AiraloApiClient` (single `send()` core + verb helpers),
+- `services/` - `AiraloApiClient` (single `send()` core + verb helpers),
   `airalo-auth.ts` (token exchange, endpoint verified against Airalo docs),
   one service object per API area (see `packages.service.ts`).
-- `pages/` — `BasePage` + page objects. Page objects receive the `api` client
+- `pages/` - `BasePage` + page objects. Page objects receive the `api` client
   via constructor injection from the fixture. Identifiers live in
   `pages/locators/*.locators.ts` (one file per page, locator factory
   functions); page classes hold behaviour only.
-- `tests/ui/`, `tests/api/` — specs import from `../../fixtures`, never
+- `tests/ui/`, `tests/api/` - specs import from `../../fixtures`, never
   `@playwright/test` directly.
 
 ## Conventions
 
 - Strict TypeScript; path aliases `@pages/*`, `@services/*`, `@fixtures/*`, `@env`.
-- Never hardcode URLs or credentials — everything comes from `env.ts`.
-- Never `new SomePage(page)` in specs — add a fixture in `pages.fixtures.ts`.
+- Never hardcode URLs or credentials - everything comes from `env.ts`.
+- Never `new SomePage(page)` in specs - add a fixture in `pages.fixtures.ts`.
 - Locators (selectors, test ids, roles/names) go in `pages/locators/`, never
-  inline in page classes or specs. Page functions are generic — take the
+  inline in page classes or specs. Page functions are generic - take the
   search term / destination / package validity as parameters, no hardcoded
   "Japan" in page objects.
 - Keep test logic out of specs: reusable verification lives in page-object

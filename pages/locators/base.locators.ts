@@ -23,7 +23,7 @@ export const baseLocators = {
   currencyDialog: (page: Page): Locator =>
     page.getByRole('dialog', { name: /^Currency:/ }).filter({ visible: true }),
 
-  /** A currency option inside the dialog, by ISO code — e.g. 'JPY' matches "Japanese yen (JPY) ¥". */
+  /** A currency option inside the dialog, by ISO code - e.g. 'JPY' matches "Japanese yen (JPY) ¥". */
   currencyOption: (page: Page, currencyCode: string): Locator =>
     baseLocators
       .currencyDialog(page)

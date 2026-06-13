@@ -45,7 +45,7 @@ export default defineConfig({
       // client waits out Retry-After delays before retrying.
       timeout: 300_000,
       use: {
-        // No browserName here on purpose — this project never launches a
+        // No browserName here on purpose - this project never launches a
         // browser; tests talk to the Partner API via APIRequestContext only.
         baseURL: airaloEnv.apiBaseURL,
       },

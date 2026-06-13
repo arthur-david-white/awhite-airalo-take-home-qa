@@ -1,6 +1,6 @@
 # awhite-airalo-take-home-qa
 
-Playwright + TypeScript test framework for **Airalo** — covering both the
+Playwright + TypeScript test framework for **Airalo** - covering both the
 website (UI) and the **Partner API** in a single project. It implements the
 two take-home exercises (a Japan unlimited-eSIM purchase journey and an
 order → get-eSIM API flow) on top of a reusable Page Object / service-object
@@ -17,14 +17,14 @@ cp .env.example .env   # then fill in AIRALO_CLIENT_ID / AIRALO_CLIENT_SECRET
 ```
 
 All base URLs and credentials come from `.env` (see `.env.example`). The real
-`.env` is gitignored — never commit credentials.
+`.env` is gitignored - never commit credentials.
 
 | Variable | Purpose | Default |
 | --- | --- | --- |
 | `AIRALO_WEB_BASE_URL` | Airalo website under test | `https://www.airalo.com` |
 | `AIRALO_API_BASE_URL` | Partner API root (incl. `/v2`) | `https://partners-api.airalo.com/v2` |
-| `AIRALO_CLIENT_ID` | OAuth2 client id | — (required for API) |
-| `AIRALO_CLIENT_SECRET` | OAuth2 client secret | — (required for API) |
+| `AIRALO_CLIENT_ID` | OAuth2 client id | - (required for API) |
+| `AIRALO_CLIENT_SECRET` | OAuth2 client secret | - (required for API) |
 
 ## Running tests
 
@@ -53,7 +53,7 @@ env.ts                 # .env loading; the single source of Airalo env values
   packages.service.ts  #   example service object pattern
   orders.service.ts    #   Submit order (POST /orders)
   sims.service.ts      #   Get eSIM (GET /sims/{iccid})
-/pages/                # UI layer (Page Object Model) — behaviour only
+/pages/                # UI layer (Page Object Model) - behaviour only
   base.page.ts         #   BasePage: navigation, logged steps, cookie banner, currency; holds api handle
   home.page.ts         #   home page: generic search + popular-locations helpers
   plans.page.ts        #   destination plans page: generic plan-type/package selection + prices
@@ -75,7 +75,7 @@ Key decisions:
   Partner API. Each is runnable independently via `--project`.
 - **Worker-scoped auth.** `airaloAuthToken` performs Airalo's real OAuth2
   `client_credentials` exchange (`POST /v2/token`, form-urlencoded, token in
-  `data.access_token` — verified against the
+  `data.access_token` - verified against the
   [Airalo Partner API docs](https://developers.partners.airalo.com/request-access-token-11883021e0))
   **once per worker**. The endpoint is rate limited and tokens last 24h, so
   per-test exchanges would both throttle and waste time.
@@ -85,24 +85,24 @@ Key decisions:
   `APIRequestContext` directly.
 - **Page objects via fixtures.** Specs receive constructed page objects
   (`homePage`) with the authenticated API client injected, so pages can seed
-  state through the API. `BasePage` holds only high-value helpers — no 1:1
+  state through the API. `BasePage` holds only high-value helpers - no 1:1
   wrappers around `locator.click()/fill()`, because Playwright locators
   already auto-wait.
 - **Web-first assertions** with meaningful messages in all UI specs.
 
 ## Test coverage & approach
 
-### Exercise 1 — UI: purchase a 7-day unlimited Japan eSIM
+### Exercise 1 - UI: purchase a 7-day unlimited Japan eSIM
 
 [`tests/ui/purchase-japan-plan.spec.ts`](tests/ui/purchase-japan-plan.spec.ts)
 
-1. **Open** the website (`homePage.open()` — also clears the OneTrust cookie
+1. **Open** the website (`homePage.open()` - also clears the OneTrust cookie
    banner and waits for it to disappear).
 2. **Search "Japan"** and click the result **identified by its flag**
    (`searchFor` → `expectSearchResultWithFlag` → `selectSearchResult`). The
    search box hydrates client-side, so `searchFor` retries typing until the
    dropdown opens and the full term landed.
-3. **Select the unlimited package** — assert the plans page loaded
+3. **Select the unlimited package** - assert the plans page loaded
    (`expectLoadedFor`), **click the Unlimited data-plan tab**
    (`selectPlanType('Unlimited')`), then select the package by validity
    (`selectPackage('7 days')`), which returns the price advertised on the card.
@@ -113,20 +113,20 @@ The spec is parameterised over `3 / 7 / 30 days` (each a separate test) to
 show the page functions are generic; the brief's exact case is the 7-day run.
 Verification logic lives in the page objects; the spec reads as the steps.
 
-### Exercise 2 — API: submit an order and retrieve every eSIM
+### Exercise 2 - API: submit an order and retrieve every eSIM
 
 [`tests/api/order-esims.spec.ts`](tests/api/order-esims.spec.ts)
 
 1. **Authenticate** via the worker-scoped OAuth2 fixture (token reused, see
    above) before any request is made.
-2. **Submit order** (`ordersApi.submit`) — POST `/orders` for **6 eSIMs** of
+2. **Submit order** (`ordersApi.submit`) - POST `/orders` for **6 eSIMs** of
    `moshi-moshi-7days-1gb`.
-3. **Get eSIM** (`simsApi.get`) — GET `/sims/{iccid}?include=order` for **each**
+3. **Get eSIM** (`simsApi.get`) - GET `/sims/{iccid}?include=order` for **each**
    eSIM returned by the order.
 4. **Validate responses** on three levels, as required:
-   - **Status codes** — 200 on every request.
-   - **Message** — `meta.message === "success"` on both endpoints.
-   - **Response body** — order fields match the request (package, quantity,
+   - **Status codes** - 200 on every request.
+   - **Message** - `meta.message === "success"` on both endpoints.
+   - **Response body** - order fields match the request (package, quantity,
      type); exactly 6 unique, well-formed eSIMs; and each fetched eSIM's
      identity fields and its included order match what the submit returned.
 
@@ -138,17 +138,17 @@ Verification logic lives in the page objects; the spec reads as the steps.
 
 The repo ships agent tooling for Claude Code under `.claude/`:
 
-- **QE-Agent** (`.claude/agents/qe-agent.md`) — a senior QA automation agent
+- **QE-Agent** (`.claude/agents/qe-agent.md`) - a senior QA automation agent
   that knows this framework's conventions and how to explore the live Airalo
   app with Playwright to discover locators.
-- **/create-ui-test** (`.claude/skills/create-ui-test/SKILL.md`) — give it a
+- **/create-ui-test** (`.claude/skills/create-ui-test/SKILL.md`) - give it a
   detailed set of test steps (identifiers optional) and it produces locators
   in `pages/locators/`, reusable page functions and an orchestrating spec.
   It enforces the locator policy (role/test-id first, XPath forbidden unless
   justified and flagged), checks `pages/CLAUDE.md` / `tests/CLAUDE.md` for
   existing functions to reuse, flags coverage overlap, and verifies with
   typecheck + repeated runs.
-- **/create-api-test** (`.claude/skills/create-api-test/SKILL.md`) — give it
+- **/create-api-test** (`.claude/skills/create-api-test/SKILL.md`) - give it
   a specific set of API requests (endpoints, data, expected validations) and
   it produces service objects, fixtures and a spec validating status codes,
   response messages and bodies. It reuses existing services first
@@ -156,13 +156,13 @@ The repo ships agent tooling for Claude Code under `.claude/`:
   Airalo docs when unsure, asks for clarification rather than guessing vague
   scenarios, and is careful with endpoints that create real orders.
 
-### Try it — example prompts
+### Try it - example prompts
 
 Run these inside Claude Code (in this repo) to generate new tests. Each skill
 explores/verifies, writes into the right layers, runs the result, and reports
 back. Copy a line, tweak the specifics, and send it.
 
-**`/create-ui-test`** — describe the journey as steps (identifiers optional;
+**`/create-ui-test`** - describe the journey as steps (identifiers optional;
 it discovers locators on the live site if you omit them):
 
 ```text
@@ -190,17 +190,17 @@ it discovers locators on the live site if you omit them):
 4. Verify the price next to the Buy now button matches the package card
 ```
 
-**`/create-api-test`** — name the endpoint(s) and what to validate (it
+**`/create-api-test`** - name the endpoint(s) and what to validate (it
 verifies the exact shape against the docs first):
 
 ```text
-/create-api-test GET /v2/packages — list packages. Validate 200,
+/create-api-test GET /v2/packages - list packages. Validate 200,
 meta.message is "success", and each package in data has an id, title and a
 non-empty operators/packages structure.
 ```
 
 ```text
-/create-api-test GET /v2/sims — the "Get eSIMs list" endpoint. Validate 200,
+/create-api-test GET /v2/sims - the "Get eSIMs list" endpoint. Validate 200,
 meta.message "success", and that data is a paginated list of eSIMs each with
 an iccid.
 ```
@@ -212,4 +212,4 @@ an iccid.
 > Tip: the more precise the expected results, the tighter the generated
 > assertions. Vague prompts make the skill ask you to clarify rather than
 > guess. Avoid order-creating endpoints (`POST /orders`) in throwaway
-> experiments — they place real orders on the partner account.
+> experiments - they place real orders on the partner account.

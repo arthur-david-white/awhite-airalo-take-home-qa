@@ -8,7 +8,7 @@ import { baseLocators } from './locators/base.locators';
  * Deliberately small: it holds the Page, an Airalo Partner API handle for
  * state setup, and a few HIGH-VALUE shared helpers (navigation, logged
  * actions, cookie-banner dismissal). It does NOT wrap locator.click()/fill()
- * — Playwright locators already auto-wait and we don't want to hide its API.
+ * - Playwright locators already auto-wait and we don't want to hide its API.
  */
 export abstract class BasePage {
   /** Route of this page relative to the ui project baseURL, e.g. '/'. */
@@ -19,7 +19,7 @@ export abstract class BasePage {
     /**
      * Airalo Partner API client so page objects CAN seed state via the API
      * (e.g. create an order before checking it in the UI). BasePage only
-     * holds the reference — all request logic lives in AiraloApiClient.
+     * holds the reference - all request logic lives in AiraloApiClient.
      */
     protected readonly api: AiraloApiClient,
   ) {}
@@ -63,7 +63,7 @@ export abstract class BasePage {
    * Dismiss Airalo's OneTrust cookie consent banner and wait until it has
    * fully cleared before continuing, so it can never overlap later actions.
    * The banner is environment/region dependent, so its absence is never a
-   * failure — but once we click Accept, it MUST disappear.
+   * failure - but once we click Accept, it MUST disappear.
    */
   async dismissCookieBanner(timeoutMs = 5_000): Promise<void> {
     const banner = baseLocators.cookieBanner(this.page);

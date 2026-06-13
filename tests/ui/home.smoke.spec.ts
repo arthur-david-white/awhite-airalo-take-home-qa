@@ -1,7 +1,7 @@
 import { expect, test } from '../../fixtures';
 
 /**
- * Trivial UI smoke spec — proves the ui project, page-object fixture and
+ * Trivial UI smoke spec - proves the ui project, page-object fixture and
  * BasePage navigation plumbing work. Real UI test cases come later.
  */
 test.describe('Airalo website smoke', () => {

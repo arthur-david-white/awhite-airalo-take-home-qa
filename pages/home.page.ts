@@ -35,7 +35,7 @@ export class HomePage extends BasePage {
   /**
    * Type a destination into the hero search box until the results dropdown
    * opens. The search box is hydrated client-side after page load, so
-   * keystrokes sent too early are silently swallowed — type-and-check is
+   * keystrokes sent too early are silently swallowed - type-and-check is
    * retried as a single unit until the dropdown actually appears.
    */
   async searchFor(term: string): Promise<void> {
@@ -45,7 +45,7 @@ export class HomePage extends BasePage {
         await this.searchInput.fill('');
         await this.searchInput.pressSequentially(term, { delay: 50 });
         // Hydration can swallow individual keystrokes, leaving a partial
-        // term that opens the dropdown with wrong results — verify the full
+        // term that opens the dropdown with wrong results - verify the full
         // term landed before trusting the dropdown.
         await expect(this.searchInput).toHaveValue(term, { timeout: 2_000 });
         await expect(this.searchResults).toBeVisible({ timeout: 4_000 });
@@ -71,7 +71,7 @@ export class HomePage extends BasePage {
   }
 
   /**
-   * Verify the search dropdown is open and reports "No results" — used for
+   * Verify the search dropdown is open and reports "No results" - used for
    * invalid or unmatched search terms.
    */
   async expectNoSearchResults(): Promise<void> {

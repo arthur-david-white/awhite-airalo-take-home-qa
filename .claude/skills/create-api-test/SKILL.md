@@ -13,9 +13,9 @@ description: >-
 Turn a specific set of API requests into an automated Playwright API test
 following this repo's architecture. The system under test is ALWAYS the
 Airalo Partner API (`AIRALO_API_BASE_URL`, https://partners-api.airalo.com/v2)
-— the `api` Playwright project (no browser, pure `APIRequestContext`).
+- the `api` Playwright project (no browser, pure `APIRequestContext`).
 
-## Input — the requester must be specific
+## Input - the requester must be specific
 
 A concrete list of requests to make and what to validate, e.g.:
 
@@ -23,7 +23,7 @@ A concrete list of requests to make and what to validate, e.g.:
 - request data (package ids, quantities, query params),
 - expected status codes, response messages and body properties.
 
-Provided endpoint details are hints — verify them before trusting them.
+Provided endpoint details are hints - verify them before trusting them.
 If the input is too vague to know WHICH requests to make or WHAT to assert
 (e.g. "test orders somehow"), do not guess the intent: state precisely what
 is missing and ask the requester to clarify. Searching the docs is for
@@ -43,7 +43,7 @@ to), plus `fixtures/api.fixtures.ts`. Then decide, request by request:
 - An existing spec already covers some or all of the scenario → still build
   what was asked, but FLAG the overlap in your final summary.
 
-Never call `APIRequestContext` directly from a spec or service — everything
+Never call `APIRequestContext` directly from a spec or service - everything
 goes through `AiraloApiClient`.
 
 ### 2. Verify endpoint shapes against the docs
@@ -59,7 +59,7 @@ For any endpoint not already implemented by a service:
    for the pattern).
 3. Never invent paths, parameter names or response fields. If the docs are
    unreachable AND the requester didn't supply the shape, quarantine the
-   assumption in one commented method and say so in the summary — same rule
+   assumption in one commented method and say so in the summary - same rule
    as the auth flow used when this framework was built.
 
 ### 3. Implement in the right layers
@@ -67,7 +67,7 @@ For any endpoint not already implemented by a service:
 - **Service objects** → `services/<area>.service.ts`: one class per API
   area, constructor takes `AiraloApiClient`, methods map 1:1 to endpoints
   and return `APIResponse` (tests assert status codes themselves). Define
-  typed request/response interfaces in the same file — type the fields the
+  typed request/response interfaces in the same file - type the fields the
   tests assert on; don't transcribe whole doc payloads speculatively.
 - **Fixtures** → register the service in `fixtures/api.fixtures.ts`
   (`ApiFixtures` interface + fixture entry) so specs receive it injected.
@@ -84,20 +84,20 @@ For any endpoint not already implemented by a service:
 
 - **Rate limits**: `AiraloApiClient.send()` already retries HTTP 429 using
   Retry-After (`rateLimitRetries` option; set 0 to assert 429 behaviour).
-  Don't add sleeps — rely on the client. The `api` project timeout is
+  Don't add sleeps - rely on the client. The `api` project timeout is
   already generous for this.
 - **Real side effects**: order-type endpoints create real orders on the
   partner account. Keep quantities exactly as requested, never loop order
   creation for "more coverage", and call out side-effecting requests in the
   summary.
-- **Secrets**: credentials come from `.env` via the auth fixture — never
+- **Secrets**: credentials come from `.env` via the auth fixture - never
   hardcode tokens, client ids or secrets anywhere, including in specs.
 
 ### 5. Verify before declaring done
 
-1. `npm run typecheck` — must be clean.
-2. `npx playwright test <new spec> --project=api` — must pass live.
-3. `npm run test:api` — the whole suite must still pass together.
+1. `npm run typecheck` - must be clean.
+2. `npx playwright test <new spec> --project=api` - must pass live.
+3. `npm run test:api` - the whole suite must still pass together.
 
 ### 6. Keep the inventories current
 

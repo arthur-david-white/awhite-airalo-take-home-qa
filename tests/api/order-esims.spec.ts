@@ -5,7 +5,7 @@ import { expect, test } from '../../fixtures';
 const packageId = 'moshi-moshi-7days-1gb';
 const quantity = 6;
 
-test.describe('Airalo Partner API — orders and eSIMs', () => {
+test.describe('Airalo Partner API - orders and eSIMs', () => {
   test(`Submit order for ${quantity} eSIMs and retrieve each eSIM's details`, async ({
     ordersApi,
     simsApi,

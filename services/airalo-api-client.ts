@@ -37,7 +37,7 @@ export interface AiraloApiClientOptions {
  *
  * Every request funnels through the single `send()` core so the Airalo base
  * URL, bearer auth, default headers and error context live in exactly one
- * place. `send()` itself is generic over verb/path — only the configuration
+ * place. `send()` itself is generic over verb/path - only the configuration
  * (base URL, token) is Airalo-specific. Service objects (see /services)
  * call into this client instead of touching APIRequestContext directly.
  */
@@ -48,7 +48,7 @@ export class AiraloApiClient {
   ) {}
 
   /**
-   * Core request method — all verbs go through here.
+   * Core request method - all verbs go through here.
    * Returns the raw APIResponse so tests can assert on any status code.
    */
   async send(method: HttpMethod, path: string, options: SendOptions = {}): Promise<APIResponse> {
@@ -81,7 +81,7 @@ export class AiraloApiClient {
         });
       } catch (error) {
         throw new Error(
-          `Airalo API request failed: ${method} ${url} — ${(error as Error).message}`,
+          `Airalo API request failed: ${method} ${url} - ${(error as Error).message}`,
         );
       }
 

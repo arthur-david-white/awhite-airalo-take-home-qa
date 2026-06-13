@@ -44,7 +44,7 @@ export const plansLocators = {
   buyNowButton: (page: Page): Locator => page.getByTestId(testIds.buyNowButton),
 
   /**
-   * Sticky checkout bar shown once a package is selected — the innermost
+   * Sticky checkout bar shown once a package is selected - the innermost
    * container holding both the "Package details" button and the "Buy now"
    * CTA, so the Total price inside it is unambiguous.
    */

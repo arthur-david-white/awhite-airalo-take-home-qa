@@ -12,7 +12,7 @@ export interface ApiWorkerFixtures {
    * Bearer token from Airalo's OAuth2 client_credentials exchange.
    * WORKER-SCOPED: the exchange runs ONCE per worker and the token (valid
    * 24h, endpoint rate limited) is reused by every test in that worker.
-   * `undefined` when credentials are not configured — see fixture body.
+   * `undefined` when credentials are not configured - see fixture body.
    */
   airaloAuthToken: string | undefined;
 }

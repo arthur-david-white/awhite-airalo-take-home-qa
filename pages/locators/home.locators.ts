@@ -26,7 +26,7 @@ export const homeLocators = {
     homeLocators.searchResults(page).getByText('No results', { exact: true }),
 
   /**
-   * Destination cards in the "eSIMs for popular locations" section — links
+   * Destination cards in the "eSIMs for popular locations" section - links
    * named "Select <Destination>" whose text includes the price in the active
    * currency (e.g. "Japan ¥700").
    */

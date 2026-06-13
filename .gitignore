@@ -1,7 +1,7 @@
 # Dependencies
 node_modules/
 
-# Secrets — only .env.example is committed
+# Secrets - only .env.example is committed
 .env
 .auth/
 

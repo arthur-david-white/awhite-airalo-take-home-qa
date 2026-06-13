@@ -1,7 +1,7 @@
 import { expect, test } from '../../fixtures';
 
 /**
- * Trivial API smoke spec — proves the api project, worker-scoped OAuth2
+ * Trivial API smoke spec - proves the api project, worker-scoped OAuth2
  * token fixture, AiraloApiClient and service-object plumbing work.
  * Real API test cases come later.
  */

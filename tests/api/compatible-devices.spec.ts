@@ -4,11 +4,11 @@ import { expect, test } from '../../fixtures';
 /**
  * GET /compatible-devices-lite returns { data: [{ os, brand, name }] }.
  * Unlike most Partner API endpoints it has NO `meta` envelope (verified
- * against the live response), so there is no message layer to assert here —
+ * against the live response), so there is no message layer to assert here -
  * the test validates the status code and the response body instead.
  * Read-only endpoint: no side effects on the partner account.
  */
-test.describe('Airalo Partner API — compatible devices', () => {
+test.describe('Airalo Partner API - compatible devices', () => {
   test('Get compatible device lite list returns eSIM-compatible devices', async ({
     devicesApi,
   }) => {

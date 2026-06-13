@@ -14,7 +14,7 @@ test.describe('Airalo eSIM purchase flow', () => {
       await homePage.expectSearchResultWithFlag(destination);
       await homePage.selectSearchResult(destination);
 
-      // 3: Select an unlimited eSIM package on the plan-selection page —
+      // 3: Select an unlimited eSIM package on the plan-selection page -
       //    click the unlimited data plan tab, then select the chosen validity
       await plansPage.expectLoadedFor(destination);
       await plansPage.selectPlanType('Unlimited');

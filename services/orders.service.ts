@@ -53,7 +53,7 @@ export class OrdersService {
   constructor(private readonly client: AiraloApiClient) {}
 
   /**
-   * POST /orders — submit an order for `quantity` eSIMs of a package.
+   * POST /orders - submit an order for `quantity` eSIMs of a package.
    * Airalo documents this endpoint as multipart/form-data.
    */
   submit({ packageId, quantity, description }: SubmitOrderRequest): Promise<APIResponse> {

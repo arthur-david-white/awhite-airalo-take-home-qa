@@ -6,7 +6,7 @@ import { plansLocators } from './locators/plans.locators';
 /**
  * Destination plan-selection page (e.g. /japan-esim), including the sticky
  * checkout bar shown after a package is selected. Generic over destination
- * and package validity — nothing in here is Japan- or 7-day-specific.
+ * and package validity - nothing in here is Japan- or 7-day-specific.
  */
 export class PlansPage extends BasePage {
   // Plans pages are per destination (/japan-esim, /turkey-esim, ...) and are

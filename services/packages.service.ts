@@ -19,7 +19,7 @@ export interface ListPackagesParams {
 export class PackagesService {
   constructor(private readonly client: AiraloApiClient) {}
 
-  /** GET /packages — list available eSIM packages. */
+  /** GET /packages - list available eSIM packages. */
   list(params?: ListPackagesParams): Promise<APIResponse> {
     return this.client.get('/packages', {
       params: params as Record<string, string | number | boolean> | undefined,

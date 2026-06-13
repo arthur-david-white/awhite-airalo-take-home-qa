@@ -4,7 +4,7 @@ import type { APIRequestContext } from '@playwright/test';
 
 /**
  * Airalo tokens are valid for 24h and the token endpoint is rate limited to
- * a handful of requests per minute — fewer than the number of parallel
+ * a handful of requests per minute - fewer than the number of parallel
  * Playwright workers. A worker-scoped fixture alone therefore is not enough:
  * the token is also cached on disk (gitignored .auth/) so one exchange
  * serves every worker and every run until it expires.
@@ -26,7 +26,7 @@ function readCachedToken(): string | undefined {
       return cached.accessToken;
     }
   } catch {
-    // Missing or corrupt cache — fall through to a fresh exchange.
+    // Missing or corrupt cache - fall through to a fresh exchange.
   }
   return undefined;
 }
@@ -65,7 +65,7 @@ interface AiraloTokenResponse {
  *   200 → { data: { token_type: "Bearer", expires_in, access_token }, meta }
  *
  * The token is valid for 24h and the endpoint is rate limited (a handful of
- * requests per minute), so callers must cache it — the airaloAuthToken
+ * requests per minute), so callers must cache it - the airaloAuthToken
  * fixture does this once per worker.
  */
 export async function fetchAiraloAccessToken(
@@ -98,7 +98,7 @@ export async function fetchAiraloAccessToken(
     });
 
     if (response.status() === 429 && attempt < MAX_TOKEN_ATTEMPTS - 1) {
-      // Rate limited — typically several workers cold-starting at once.
+      // Rate limited - typically several workers cold-starting at once.
       // Wait (Retry-After or jittered backoff), then prefer a token a
       // faster sibling worker may have cached in the meantime.
       const retryAfterSeconds = Number(response.headers()['retry-after']);

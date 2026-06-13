@@ -13,7 +13,7 @@ export interface CompatibleDevice {
 
 export interface CompatibleDevicesResponse {
   data: CompatibleDevice[];
-  /** Airalo envelope message — may be absent on this endpoint (asserted live). */
+  /** Airalo envelope message - may be absent on this endpoint (asserted live). */
   meta?: { message?: string };
 }
 
@@ -25,7 +25,7 @@ export class DevicesService {
   constructor(private readonly client: AiraloApiClient) {}
 
   /**
-   * GET /compatible-devices-lite — list eSIM-compatible devices.
+   * GET /compatible-devices-lite - list eSIM-compatible devices.
    * No query parameters; each device is { os, brand, name }.
    */
   listCompatibleLite(): Promise<APIResponse> {
