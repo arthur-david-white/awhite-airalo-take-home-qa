@@ -6,7 +6,7 @@ two take-home exercises (a Japan unlimited-eSIM purchase journey and an
 order → get-eSIM API flow) on top of a reusable Page Object / service-object
 foundation, plus extra UI coverage (search, currency). See
 [Test coverage & approach](#test-coverage--approach) for how each exercise
-maps to the code.
+maps to the code, and [prompts.md](prompts.md) for the prompts used to build it.
 
 ## Setup
 
