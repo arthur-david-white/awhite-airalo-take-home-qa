@@ -27,9 +27,16 @@ Partner API, as two independent Playwright projects in one repo.
 npm test               # run both suites
 npm run test:ui        # website suite (chromium)
 npm run test:api       # Partner API suite (no browser)
+npm run test:headed    # all browser tests, headed
+npm run test:ui:headed # website suite, headed
 npm run typecheck      # tsc --noEmit (strict mode)
 npm run report         # open HTML report
-npx playwright test tests/api/packages.smoke.spec.ts   # single file
+
+# single spec (add --headed for the ui project)
+npx playwright test tests/api/packages.smoke.spec.ts --project=api
+npx playwright test tests/ui/search.spec.ts --project=ui --headed
+# single test by title
+npx playwright test --project=ui -g "Purchase 7 days Japan Plan"
 ```
 
 API tests need `AIRALO_CLIENT_ID` / `AIRALO_CLIENT_SECRET` in `.env`

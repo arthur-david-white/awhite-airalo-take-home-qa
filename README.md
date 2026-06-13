@@ -28,12 +28,47 @@ All base URLs and credentials come from `.env` (see `.env.example`). The real
 
 ## Running tests
 
+### Whole suites
+
 ```bash
-npm test           # everything (ui + api)
-npm run test:ui    # website suite only (chromium)
-npm run test:api   # Partner API suite only (no browser)
-npm run report     # open the HTML report
-npm run typecheck  # tsc --noEmit
+npm test                # everything (ui + api)
+npm run test:ui         # website suite only (chromium)
+npm run test:api        # Partner API suite only (no browser)
+npm run report          # open the HTML report
+npm run typecheck       # tsc --noEmit
+```
+
+### Headed mode (watch the browser)
+
+Headed mode applies to the UI suite only - the API suite never launches a
+browser.
+
+```bash
+npm run test:headed     # all browser tests, headed
+npm run test:ui:headed  # website suite, headed
+```
+
+### Individual specs
+
+Pass a spec path straight to Playwright. Use `--` to forward args through npm,
+or call `npx playwright test` directly.
+
+```bash
+# single spec (headless)
+npx playwright test tests/ui/search.spec.ts --project=ui
+npx playwright test tests/api/compatible-devices.spec.ts --project=api
+
+# single spec, headed
+npx playwright test tests/ui/purchase-japan-plan.spec.ts --project=ui --headed
+npm run test:ui -- tests/ui/search.spec.ts --headed   # via npm passthrough
+
+# a single test by title (-g matches the test name)
+npx playwright test --project=ui -g "Purchase 7 days Japan Plan"
+npx playwright test --project=ui -g "Purchase 7 days Japan Plan" --headed
+
+# handy extras: step through interactively, or open Playwright's UI runner
+npx playwright test tests/ui/search.spec.ts --project=ui --debug
+npx playwright test --ui
 ```
 
 The UI suite runs without Partner API credentials; the API suite requires them
