@@ -30,6 +30,10 @@ when specs are added or changed.
   6 unique well-formed sims), then GET /sims/{iccid}?include=order for each
   sim (validates identity fields match the order and simable = our order).
   NOTE: each run submits a REAL order on the partner account.
+- `compatible-devices.spec.ts` — GET /compatible-devices-lite: validates 200
+  and the body (non-empty list of well-formed { os, brand, name } devices,
+  covering iOS + Android incl. an Apple iPhone). Read-only, no side effects.
+  This endpoint has no `meta` envelope, so there is no message layer.
 
 ## Conventions
 

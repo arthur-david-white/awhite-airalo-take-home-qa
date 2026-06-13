@@ -43,12 +43,20 @@ with an expiry margin, so one exchange serves all workers and repeat runs;
     retrievable.
   - Types: `EsimDetails`, `GetEsimResponse`.
   - Docs: https://developers.partners.airalo.com/get-esim-11883028e0
+- **DevicesService** (`devices.service.ts`) — fixture `devicesApi`
+  - `listCompatibleLite()` — GET /compatible-devices-lite (no params).
+    Read-only, no side effects. NOTE: this endpoint returns `{ data: [...] }`
+    with NO `meta` envelope (each device is `{ os, brand, name }`).
+  - Types: `CompatibleDevice`, `CompatibleDevicesResponse`.
+  - Docs: https://developers.partners.airalo.com/get-compatible-device-lite-list-19504054e0
 
 ## Response envelope
 
-All Partner API responses wrap payloads as `{ data: ..., meta: { message } }`;
-`meta.message` is "success" on happy paths. Errors: 401 (auth), 422
-(validation), 429 (rate limit — handled by the client).
+Most Partner API responses wrap payloads as `{ data: ..., meta: { message } }`;
+`meta.message` is "success" on happy paths. Known exception:
+`/compatible-devices-lite` returns `{ data: [...] }` with no `meta` (verified
+live). Errors: 401 (auth), 422 (validation), 429 (rate limit — handled by the
+client).
 
 ## Conventions
 

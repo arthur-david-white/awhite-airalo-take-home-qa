@@ -2,6 +2,7 @@ import { test as base, type APIRequestContext } from '@playwright/test';
 import { airaloEnv } from '../env';
 import { AiraloApiClient } from '../services/airalo-api-client';
 import { fetchAiraloAccessToken } from '../services/airalo-auth';
+import { DevicesService } from '../services/devices.service';
 import { OrdersService } from '../services/orders.service';
 import { PackagesService } from '../services/packages.service';
 import { SimsService } from '../services/sims.service';
@@ -27,6 +28,8 @@ export interface ApiFixtures {
   ordersApi: OrdersService;
   /** eSIM endpoints (get eSIM details). */
   simsApi: SimsService;
+  /** Device-compatibility endpoints (compatible-devices-lite). */
+  devicesApi: DevicesService;
 }
 
 export const test = base.extend<ApiFixtures, ApiWorkerFixtures>({
@@ -86,5 +89,9 @@ export const test = base.extend<ApiFixtures, ApiWorkerFixtures>({
 
   simsApi: async ({ api }, use) => {
     await use(new SimsService(api));
+  },
+
+  devicesApi: async ({ api }, use) => {
+    await use(new DevicesService(api));
   },
 });
