@@ -13,6 +13,9 @@ when specs are added or changed.
   - "UK" search lands on the United Kingdom plans page (flag-verified
     dropdown selection, URL + heading checks).
   - invalid term ("Atlantis123") shows "No results" in the dropdown.
+- `currency-selection.spec.ts` — header currency switcher: select Japanese
+  Yen (JPY), validate every card in the "eSIMs for popular locations"
+  section prices in ¥.
 - `purchase-japan-plan.spec.ts` — purchase flow, parameterised over
   validities `3 days` / `7 days` / `30 days` (one separate test per value):
   search Japan → flag-verified select → plans page → select package →

@@ -24,4 +24,12 @@ export const homeLocators = {
   /** "No results" message shown in the dropdown for an unmatched search term. */
   searchNoResults: (page: Page): Locator =>
     homeLocators.searchResults(page).getByText('No results', { exact: true }),
+
+  /**
+   * Destination cards in the "eSIMs for popular locations" section — links
+   * named "Select <Destination>" whose text includes the price in the active
+   * currency (e.g. "Japan ¥700").
+   */
+  popularDestinationCards: (page: Page): Locator =>
+    page.getByRole('link', { name: /^Select / }),
 };

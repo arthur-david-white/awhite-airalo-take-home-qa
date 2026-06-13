@@ -2,6 +2,7 @@ import { expect, type Locator, type Page } from '@playwright/test';
 import type { AiraloApiClient } from '../services/airalo-api-client';
 import { BasePage } from './base.page';
 import { homeLocators } from './locators/home.locators';
+import { escapeRegExp } from './locators/locator.utils';
 
 /** Airalo website home page (https://www.airalo.com/). */
 export class HomePage extends BasePage {
@@ -11,11 +12,14 @@ export class HomePage extends BasePage {
   readonly searchInput: Locator;
   /** Destination results dropdown that opens under the search box. */
   readonly searchResults: Locator;
+  /** Destination cards in the "eSIMs for popular locations" section. */
+  readonly popularDestinationCards: Locator;
 
   constructor(page: Page, api: AiraloApiClient) {
     super(page, api);
     this.searchInput = homeLocators.searchInput(page);
     this.searchResults = homeLocators.searchResults(page);
+    this.popularDestinationCards = homeLocators.popularDestinationCards(page);
   }
 
   /** A destination entry in the search dropdown, e.g. searchResult('Japan'). */
@@ -40,6 +44,10 @@ export class HomePage extends BasePage {
         await this.searchInput.click();
         await this.searchInput.fill('');
         await this.searchInput.pressSequentially(term, { delay: 50 });
+        // Hydration can swallow individual keystrokes, leaving a partial
+        // term that opens the dropdown with wrong results — verify the full
+        // term landed before trusting the dropdown.
+        await expect(this.searchInput).toHaveValue(term, { timeout: 2_000 });
         await expect(this.searchResults).toBeVisible({ timeout: 4_000 });
       }).toPass({ timeout: 30_000 });
     });
@@ -83,6 +91,30 @@ export class HomePage extends BasePage {
   async selectSearchResult(destination: string): Promise<void> {
     await this.step(`select "${destination}" from search results`, async () => {
       await this.searchResult(destination).click();
+    });
+  }
+
+  /**
+   * Verify every destination card in the "eSIMs for popular locations"
+   * section shows its price in the given currency symbol, e.g. '¥'.
+   */
+  async expectPopularDestinationPricesIn(currencySymbol: string): Promise<void> {
+    await this.step(`verify popular destination prices use "${currencySymbol}"`, async () => {
+      await expect(
+        this.popularDestinationCards.first(),
+        'Popular locations section should list destination cards',
+      ).toBeVisible();
+
+      const pricePattern = new RegExp(`${escapeRegExp(currencySymbol)}\\s?[\\d.,]+`);
+      // Iterating the collection (not positional disambiguation): every card
+      // must show a price in the selected currency.
+      const count = await this.popularDestinationCards.count();
+      for (let i = 0; i < count; i++) {
+        await expect(
+          this.popularDestinationCards.nth(i),
+          `Popular destination card ${i + 1} of ${count} should show its price in ${currencySymbol}`,
+        ).toContainText(pricePattern);
+      }
     });
   }
 }

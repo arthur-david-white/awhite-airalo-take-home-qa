@@ -3,6 +3,7 @@ node_modules/
 
 # Secrets — only .env.example is committed
 .env
+.auth/
 
 # Playwright output
 test-results/

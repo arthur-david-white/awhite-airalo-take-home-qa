@@ -14,7 +14,12 @@ new code.
   page function).
 - `dismissCookieBanner(timeoutMs?)` — OneTrust banner: clicks Accept if shown
   and waits until it has fully disappeared.
-- Locators: `locators/base.locators.ts` — `cookieBanner`, `cookieAcceptButton`.
+- `selectCurrency(currencyCode)` — header currency dialog: opens it
+  (hydration-safe retry), picks the option by ISO code (e.g. 'JPY'), waits
+  for the dialog to close. Works on every page.
+- Locators: `locators/base.locators.ts` — `cookieBanner`,
+  `cookieAcceptButton`, `currencyButton`, `currencyDialog`,
+  `currencyOption(code)`.
 
 ## HomePage (`home.page.ts`) — fixture: `homePage`, path `/`
 
@@ -28,7 +33,12 @@ new code.
   present, identified by flag.
 - `expectNoSearchResults()` — dropdown shows exact text "No results".
 - `selectSearchResult(destination)` — clicks a dropdown entry.
-- Locators: `locators/home.locators.ts`.
+- `popularDestinationCards` — destination cards ("Select <Destination>"
+  links) in the "eSIMs for popular locations" section.
+- `expectPopularDestinationPricesIn(currencySymbol)` — every popular
+  destination card shows its price in the given symbol (e.g. '¥').
+- Locators: `locators/home.locators.ts`. Shared regex escaping:
+  `locators/locator.utils.ts`.
 
 ## PlansPage (`plans.page.ts`) — fixture: `plansPage`
 

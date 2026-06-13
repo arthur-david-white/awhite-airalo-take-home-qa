@@ -53,7 +53,10 @@ export const test = base.extend<ApiFixtures, ApiWorkerFixtures>({
       }
       await use(token);
     },
-    { scope: 'worker' },
+    // Generous timeout: on a cold cache the exchange may wait out the token
+    // endpoint's Retry-After window before a retry (or a sibling worker's
+    // cached token) succeeds.
+    { scope: 'worker', timeout: 240_000 },
   ],
 
   apiContext: async ({ playwright }, use) => {

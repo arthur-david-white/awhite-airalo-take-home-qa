@@ -1,6 +1,5 @@
 import type { Locator, Page } from '@playwright/test';
-
-const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+import { escapeRegExp } from './locator.utils';
 
 /** Airalo data-testid hooks on the plans / package-selection page. */
 const testIds = {

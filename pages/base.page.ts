@@ -1,4 +1,4 @@
-import { test, type Page } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import type { AiraloApiClient } from '../services/airalo-api-client';
 import { baseLocators } from './locators/base.locators';
 
@@ -38,6 +38,25 @@ export abstract class BasePage {
    */
   protected step<T>(title: string, body: () => Promise<T>): Promise<T> {
     return test.step(`${this.constructor.name}: ${title}`, body);
+  }
+
+  /**
+   * Switch the site currency via the header currency dialog, e.g.
+   * selectCurrency('JPY'). Available on every page (site-wide header).
+   * Waits for the dialog to close, which is when the new currency applies.
+   */
+  async selectCurrency(currencyCode: string): Promise<void> {
+    await this.step(`select currency ${currencyCode}`, async () => {
+      const dialog = baseLocators.currencyDialog(this.page);
+      // The header hydrates client-side; retry open-and-check as one unit
+      // (same pattern as HomePage.searchFor).
+      await expect(async () => {
+        await baseLocators.currencyButton(this.page).click();
+        await expect(dialog, 'Currency dialog should open').toBeVisible({ timeout: 3_000 });
+      }).toPass({ timeout: 30_000 });
+      await baseLocators.currencyOption(this.page, currencyCode).click();
+      await dialog.waitFor({ state: 'hidden' });
+    });
   }
 
   /**

@@ -22,8 +22,11 @@ Returns raw `APIResponse` — specs assert status codes themselves.
 
 `fetchAiraloAccessToken(request, { apiBaseURL, clientId, clientSecret })` —
 OAuth2 client_credentials exchange, POST {base}/token (urlencoded), token at
-`data.access_token`, valid 24h, rate limited. Called ONCE per worker by the
-`airaloAuthToken` fixture — never call it from specs.
+`data.access_token`, valid 24h, rate limited (fewer requests/min than our
+parallel workers). Called by the worker-scoped `airaloAuthToken` fixture —
+never call it from specs. Tokens are cached on disk (gitignored `.auth/`)
+with an expiry margin, so one exchange serves all workers and repeat runs;
+429s retry with Retry-After/backoff and re-check the cache.
 
 ## Services (fixtures in `fixtures/api.fixtures.ts`)
 
