@@ -11,23 +11,7 @@ wording is kept.
 
 ---
 
-## 1. Repository setup
-
-```text
-Firstly lets push create a repo here and push it to git using the git cli.
-
-The git project should be called awhite-airalo-take-home-qa which should be public
-```
-
-Follow-up (became a standing preference):
-
-```text
-When commiting make sure to not give credit to claude
-```
-
----
-
-## 2. Framework base (the foundational prompt)
+## 1. Framework base (the foundational prompt)
 
 The prompt that defined the whole architecture - projects, layering, fixtures,
 and the instruction to verify the real OAuth2 flow before writing auth.
@@ -102,7 +86,7 @@ example service), /fixtures (auth, api, page-object fixtures).
 
 ---
 
-## 3. First UI test - Purchase 7-day Japan plan
+## 2. First UI test - Purchase 7-day Japan plan
 
 Established the locator policy and the pages-hold-behaviour / specs-orchestrate
 split that the rest of the framework follows.
@@ -139,7 +123,7 @@ result. Same for the plans, we should be able to specify the plan
 
 ---
 
-## 4. Refactor - push logic into page objects, robust cookie dismissal
+## 3. Refactor - push logic into page objects, robust cookie dismissal
 
 ```text
 A couple of things. Where possible i think its best we try to move test logic
@@ -152,7 +136,7 @@ the test is going on
 
 ---
 
-## 5. Parameterise the purchase test (3 / 7 / 30 days)
+## 4. Parameterise the purchase test (3 / 7 / 30 days)
 
 ```text
 Lets expand this test suite to check the prices match for 3 and 30 days also.
@@ -162,7 +146,7 @@ should look to keep them seperate tests though?
 
 ---
 
-## 6. Search test suite
+## 5. Search test suite
 
 ```text
 Lets create a new test suite that verifies the search function since we have
@@ -176,7 +160,7 @@ drop down shows "No Results"
 
 ---
 
-## 7. Partner API tests - submit order + get eSIM
+## 6. Partner API tests - submit order + get eSIM
 
 ```text
 Cool so now we have a basic UI test suite lets create some API tests.
@@ -199,7 +183,7 @@ tests for the following
 
 ---
 
-## 8. QE-Agent + the create-ui-test skill
+## 7. QE-Agent + the create-ui-test skill
 
 ```text
 Lets expand this project now to include an agent. Lets call it the QE-Agent
@@ -220,7 +204,7 @@ worth adding claude mds to the pages and tests to help with this
 
 ---
 
-## 9. The create-api-test skill
+## 8. The create-api-test skill
 
 ```text
 Lets repeat that exercise for create-api-test this should work much the same
@@ -231,7 +215,7 @@ search the docs for functions but the requester should be clear
 
 ---
 
-## 10. Using the skills - currency selection UI test
+## 9. Using the skills - currency selection UI test
 
 Exercising `/create-ui-test` on a fresh scenario.
 
@@ -254,7 +238,7 @@ And `/create-api-test` on a new endpoint:
 
 ---
 
-## 11. Fixing skill discovery
+## 10. Fixing skill discovery
 
 ```text
 Can we fix the skills not being invokable?
@@ -265,7 +249,7 @@ started, so Claude Code wasn't watching it - a restart fixed discovery.)
 
 ---
 
-## 12. Polish & hardening
+## 11. Polish & hardening
 
 Smaller prompts that refined docs and robustness:
 
