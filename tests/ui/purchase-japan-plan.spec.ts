@@ -6,26 +6,22 @@ const validities = ['3 days', '7 days', '30 days'] as const;
 test.describe('Airalo eSIM purchase flow', () => {
   for (const validity of validities) {
     test(`Purchase ${validity} ${destination} Plan`, async ({ homePage, plansPage }) => {
-      // 1: Open the webpage
+      // 1: Open Airalo's website
       await homePage.open();
 
-      // 2: Type the destination into the search field
+      // 2: Search for the destination, then click the result with its flag
       await homePage.searchFor(destination);
-
-      // 3: The dropdown should contain valid results — verify the destination
-      //    is present by its flag, then click it
       await homePage.expectSearchResultWithFlag(destination);
       await homePage.selectSearchResult(destination);
 
-      // 4: Validate we are on the plan selection page
+      // 3: Select an unlimited eSIM package on the plan-selection page —
+      //    click the unlimited data plan tab, then select the chosen validity
       await plansPage.expectLoadedFor(destination);
-
-      // 5: Find and click the package (capturing its advertised price)
+      await plansPage.selectPlanType('Unlimited');
       const advertisedPrice = await plansPage.selectPackage(validity);
 
-      // 6: The price shown next to Package details must match the price shown
-      //    in the actual package
-      await plansPage.expectPackageDetailsPrice(advertisedPrice);
+      // 4: Verify the package price matches the price next to the Buy now button
+      await plansPage.expectBuyNowPriceMatches(advertisedPrice);
     });
   }
 });

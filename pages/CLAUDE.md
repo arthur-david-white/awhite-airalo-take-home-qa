@@ -47,17 +47,19 @@ including the sticky checkout bar shown after selecting a package. Fully
 generic — parameterised by destination and package validity.
 
 - Locator properties: `heading` (h1, "<Destination> eSIMs"),
-  `packageDetailsButton`, `packageDetailsTotalPrice` (Total in checkout bar),
-  `buyNowButton`.
+  `packageDetailsButton`, `buyNowPrice` (Total in checkout bar, next to Buy
+  now), `buyNowButton`.
 - `routeFor(destination)` / `urlFor(destination)` — '/japan-esim' route and
   URL assertion pattern. `openFor(destination)` — direct navigation.
+- `planTypeTab(tabName)` / `selectPlanType(tabName)` — data-plan-type tab
+  ('Unlimited' / 'Standard') locator and a click-and-verify-selected action.
 - `packageCard(validity)` / `packagePrice(validity)` — package button (e.g.
   '7 days') and its advertised price.
 - `expectLoadedFor(destination)` — URL + heading verification.
 - `selectPackage(validity)` — verifies offered, clicks, RETURNS the
   advertised price string for later comparison.
-- `expectPackageDetailsPrice(expectedPrice)` — checkout bar visible and Total
-  matches.
+- `expectBuyNowPriceMatches(expectedPrice)` — checkout bar visible and the
+  Total next to the Buy now button matches.
 - Locators: `locators/plans.locators.ts` (uses Airalo `data-testid` hooks:
   `price_amount`, `store-operator-details_plan-details-button`,
   `cart-navigation_select-package-cta`).

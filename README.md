@@ -1,8 +1,12 @@
 # awhite-airalo-take-home-qa
 
 Playwright + TypeScript test framework for **Airalo** — covering both the
-website (UI) and the **Partner API** in a single project. This is the reusable
-foundation; only one trivial smoke spec per suite exists to prove the plumbing.
+website (UI) and the **Partner API** in a single project. It implements the
+two take-home exercises (a Japan unlimited-eSIM purchase journey and an
+order → get-eSIM API flow) on top of a reusable Page Object / service-object
+foundation, plus extra UI coverage (search, currency). See
+[Test coverage & approach](#test-coverage--approach) for how each exercise
+maps to the code.
 
 ## Setup
 
@@ -45,15 +49,23 @@ env.ts                 # .env loading; the single source of Airalo env values
   pages.fixtures.ts    #   page objects constructed with the api client injected
 /services/             # API layer
   airalo-api-client.ts #   AiraloApiClient: single send() core + get/post/put/patch/delete
-  airalo-auth.ts       #   OAuth2 client_credentials exchange (POST /v2/token)
+  airalo-auth.ts       #   OAuth2 client_credentials exchange (POST /v2/token) + token cache
   packages.service.ts  #   example service object pattern
+  orders.service.ts    #   Submit order (POST /orders)
+  sims.service.ts      #   Get eSIM (GET /sims/{iccid})
 /pages/                # UI layer (Page Object Model) — behaviour only
-  base.page.ts         #   BasePage: navigation, logged steps, cookie banner; holds api handle
-  home.page.ts         #   home page: generic search functions
-  plans.page.ts        #   destination plans page: generic package selection + prices
+  base.page.ts         #   BasePage: navigation, logged steps, cookie banner, currency; holds api handle
+  home.page.ts         #   home page: generic search + popular-locations helpers
+  plans.page.ts        #   destination plans page: generic plan-type/package selection + prices
   locators/            #   identifiers, one file per page (locator factories)
 /tests/ui/             # UI specs (assertions live here)
+  purchase-japan-plan.spec.ts  #   exercise 1: Japan unlimited purchase journey (3/7/30 days)
+  search.spec.ts               #   UK search + no-results handling
+  currency-selection.spec.ts   #   currency switch (JPY) pricing
+  home.smoke.spec.ts           #   plumbing smoke
 /tests/api/            # API specs
+  order-esims.spec.ts          #   exercise 2: submit order for 6 eSIMs → get each eSIM
+  packages.smoke.spec.ts       #   auth + plumbing smoke
 ```
 
 Key decisions:
@@ -77,6 +89,50 @@ Key decisions:
   wrappers around `locator.click()/fill()`, because Playwright locators
   already auto-wait.
 - **Web-first assertions** with meaningful messages in all UI specs.
+
+## Test coverage & approach
+
+### Exercise 1 — UI: purchase a 7-day unlimited Japan eSIM
+
+[`tests/ui/purchase-japan-plan.spec.ts`](tests/ui/purchase-japan-plan.spec.ts)
+
+1. **Open** the website (`homePage.open()` — also clears the OneTrust cookie
+   banner and waits for it to disappear).
+2. **Search "Japan"** and click the result **identified by its flag**
+   (`searchFor` → `expectSearchResultWithFlag` → `selectSearchResult`). The
+   search box hydrates client-side, so `searchFor` retries typing until the
+   dropdown opens and the full term landed.
+3. **Select the unlimited package** — assert the plans page loaded
+   (`expectLoadedFor`), **click the Unlimited data-plan tab**
+   (`selectPlanType('Unlimited')`), then select the package by validity
+   (`selectPackage('7 days')`), which returns the price advertised on the card.
+4. **Verify the price** advertised on the card matches the Total shown **next
+   to the Buy now button** (`expectBuyNowPriceMatches`).
+
+The spec is parameterised over `3 / 7 / 30 days` (each a separate test) to
+show the page functions are generic; the brief's exact case is the 7-day run.
+Verification logic lives in the page objects; the spec reads as the steps.
+
+### Exercise 2 — API: submit an order and retrieve every eSIM
+
+[`tests/api/order-esims.spec.ts`](tests/api/order-esims.spec.ts)
+
+1. **Authenticate** via the worker-scoped OAuth2 fixture (token reused, see
+   above) before any request is made.
+2. **Submit order** (`ordersApi.submit`) — POST `/orders` for **6 eSIMs** of
+   `moshi-moshi-7days-1gb`.
+3. **Get eSIM** (`simsApi.get`) — GET `/sims/{iccid}?include=order` for **each**
+   eSIM returned by the order.
+4. **Validate responses** on three levels, as required:
+   - **Status codes** — 200 on every request.
+   - **Message** — `meta.message === "success"` on both endpoints.
+   - **Response body** — order fields match the request (package, quantity,
+     type); exactly 6 unique, well-formed eSIMs; and each fetched eSIM's
+     identity fields and its included order match what the submit returned.
+
+> Note: the submit-order endpoint creates a **real order** on the partner
+> account each run. The HTTP client transparently retries the endpoint's rate
+> limit (HTTP 429, honouring `Retry-After`).
 
 ## QE-Agent & skills (Claude Code)
 

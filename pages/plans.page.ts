@@ -18,8 +18,8 @@ export class PlansPage extends BasePage {
   readonly heading: Locator;
   /** "Package details" button in the sticky checkout bar. */
   readonly packageDetailsButton: Locator;
-  /** Total price in the checkout bar, shown next to "Package details". */
-  readonly packageDetailsTotalPrice: Locator;
+  /** Total price in the checkout bar, shown next to the "Buy now" button. */
+  readonly buyNowPrice: Locator;
   /** "Buy now" CTA in the sticky checkout bar. */
   readonly buyNowButton: Locator;
 
@@ -27,8 +27,13 @@ export class PlansPage extends BasePage {
     super(page, api);
     this.heading = plansLocators.heading(page);
     this.packageDetailsButton = plansLocators.packageDetailsButton(page);
-    this.packageDetailsTotalPrice = plansLocators.packageDetailsTotalPrice(page);
+    this.buyNowPrice = plansLocators.buyNowPrice(page);
     this.buyNowButton = plansLocators.buyNowButton(page);
+  }
+
+  /** A data-plan-type tab ('Unlimited' / 'Standard'), e.g. planTypeTab('Unlimited'). */
+  planTypeTab(tabName: string): Locator {
+    return plansLocators.planTypeTab(this.page, tabName);
   }
 
   /** Route for a destination's plans page, e.g. 'Japan' → /japan-esim. */
@@ -46,6 +51,23 @@ export class PlansPage extends BasePage {
     await this.step(`open plans page for ${destination}`, async () => {
       await this.page.goto(this.routeFor(destination));
       await this.dismissCookieBanner();
+    });
+  }
+
+  /**
+   * Select a data-plan-type tab, e.g. selectPlanType('Unlimited'). Tabs that
+   * are already active are a no-op click, so this is safe to call regardless
+   * of the default selection.
+   */
+  async selectPlanType(tabName: string): Promise<void> {
+    await this.step(`select the ${tabName} data plan tab`, async () => {
+      const tab = this.planTypeTab(tabName);
+      await expect(tab, `A "${tabName}" data plan tab should be offered`).toBeVisible();
+      await tab.click();
+      await expect(tab, `"${tabName}" tab should be selected`).toHaveAttribute(
+        'aria-selected',
+        'true',
+      );
     });
   }
 
@@ -90,18 +112,18 @@ export class PlansPage extends BasePage {
   }
 
   /**
-   * Verify the checkout bar is shown and the Total next to "Package details"
-   * matches the expected price (as advertised on the package card).
+   * Verify the checkout bar is shown and the Total price next to the "Buy now"
+   * button matches the expected price (as advertised on the package card).
    */
-  async expectPackageDetailsPrice(expectedPrice: string): Promise<void> {
-    await this.step(`verify package details total is ${expectedPrice}`, async () => {
+  async expectBuyNowPriceMatches(expectedPrice: string): Promise<void> {
+    await this.step(`verify the price next to Buy now is ${expectedPrice}`, async () => {
       await expect(
-        this.packageDetailsButton,
-        'Package details should be shown after selecting a package',
+        this.buyNowButton,
+        'Buy now button should be shown after selecting a package',
       ).toBeVisible();
       await expect(
-        this.packageDetailsTotalPrice,
-        'Total next to Package details should match the advertised package price',
+        this.buyNowPrice,
+        'Total next to the Buy now button should match the advertised package price',
       ).toHaveText(expectedPrice);
     });
   }

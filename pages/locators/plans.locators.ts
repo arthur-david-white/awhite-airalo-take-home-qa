@@ -17,6 +17,13 @@ export const plansLocators = {
   heading: (page: Page): Locator => page.getByRole('heading', { level: 1 }),
 
   /**
+   * A data-plan-type tab, e.g. 'Unlimited' or 'Standard'. The page groups
+   * packages under these tabs; selecting one reveals its package cards.
+   */
+  planTypeTab: (page: Page, tabName: string): Locator =>
+    page.getByRole('tab', { name: tabName, exact: true }),
+
+  /**
    * Package card button for a validity such as '7 days'. Cards carry an
    * aria-label like "Select Unlimited - 7 days for £21.00."; the visible
    * filter skips duplicates inside non-active tab panels.
@@ -41,14 +48,14 @@ export const plansLocators = {
    * container holding both the "Package details" button and the "Buy now"
    * CTA, so the Total price inside it is unambiguous.
    */
-  packageDetailsBar: (page: Page): Locator =>
+  checkoutBar: (page: Page): Locator =>
     page
       .locator('div')
       .filter({ has: page.getByTestId(testIds.packageDetailsButton) })
       .filter({ has: page.getByTestId(testIds.buyNowButton) })
       .last(),
 
-  /** Total price shown in the checkout bar next to "Package details". */
-  packageDetailsTotalPrice: (page: Page): Locator =>
-    plansLocators.packageDetailsBar(page).getByTestId(testIds.price),
+  /** Total price shown in the checkout bar, next to the "Buy now" button. */
+  buyNowPrice: (page: Page): Locator =>
+    plansLocators.checkoutBar(page).getByTestId(testIds.price),
 };
