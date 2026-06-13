@@ -10,6 +10,10 @@ new code.
 - Holds `page: Page` and an injected `api: AiraloApiClient` (for API state
   setup; BasePage holds the reference only).
 - `open()` - goto `this.path` + dismiss cookie banner.
+- `goto(path)` - guarded navigation (use instead of `page.goto`): suppresses
+  the browser's native push-notification permission prompt (an init script
+  denies the Web Notification API), then navigates. `open()` and
+  `PlansPage.openFor()` route through it.
 - `step(title, body)` - wraps actions in a named `test.step` (use in every
   page function).
 - `dismissCookieBanner(timeoutMs?)` - OneTrust banner: clicks Accept if shown

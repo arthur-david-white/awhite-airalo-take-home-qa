@@ -27,8 +27,66 @@ export abstract class BasePage {
   /** Navigate to this page and clear Airalo's cookie banner if it appears. */
   async open(): Promise<void> {
     await this.step(`open ${this.path}`, async () => {
-      await this.page.goto(this.path);
+      await this.goto(this.path);
       await this.dismissCookieBanner();
+    });
+  }
+
+  /**
+   * Navigate to `path` with site-wide guards applied. Use this instead of
+   * `page.goto()` directly so every navigation is protected.
+   */
+  protected async goto(path: string): Promise<void> {
+    await this.suppressNotificationPrompt();
+    await this.page.goto(path);
+  }
+
+  // Install the notification guard at most once per page instance.
+  private notificationPromptSuppressed = false;
+
+  /**
+   * Stop the browser's native "Allow notifications?" permission prompt from
+   * ever appearing. Airalo calls `Notification.requestPermission()` after a
+   * short delay on the landing page; in headed runs that fires the native
+   * Chrome prompt, which steals focus and intermittently breaks the test.
+   *
+   * It is a NATIVE browser prompt (not page DOM), so it can't be dismissed
+   * with a locator. Instead we install an init script (runs before any page
+   * script, on every navigation in this page) that makes the Web Notification
+   * API report a settled "denied" state, so the site never triggers a prompt.
+   */
+  private async suppressNotificationPrompt(): Promise<void> {
+    if (this.notificationPromptSuppressed) return;
+    this.notificationPromptSuppressed = true;
+    // Runs in the browser before any page script; typed as `any` because the
+    // project's tsconfig omits the DOM lib (these globals exist at runtime).
+    await this.page.addInitScript(() => {
+      const w = globalThis as unknown as {
+        Notification?: { permission: string; requestPermission: unknown };
+        PushManager?: { prototype?: { subscribe?: unknown } };
+        DOMException: new (message: string, name: string) => Error;
+      };
+      try {
+        if (w.Notification) {
+          Object.defineProperty(w.Notification, 'permission', {
+            configurable: true,
+            get: () => 'denied',
+          });
+          // Resolve immediately as denied without invoking the native prompt,
+          // supporting both the promise and legacy callback signatures.
+          w.Notification.requestPermission = (callback?: (permission: string) => void) => {
+            callback?.('denied');
+            return Promise.resolve('denied');
+          };
+        }
+        // Belt-and-braces: reject service-worker push subscription too.
+        if (w.PushManager?.prototype?.subscribe) {
+          w.PushManager.prototype.subscribe = () =>
+            Promise.reject(new w.DOMException('Blocked in tests', 'NotAllowedError'));
+        }
+      } catch {
+        /* Notification API absent or locked down - nothing to suppress. */
+      }
     });
   }
 

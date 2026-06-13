@@ -49,7 +49,7 @@ export class PlansPage extends BasePage {
   /** Navigate straight to a destination's plans page, e.g. openFor('Japan'). */
   async openFor(destination: string): Promise<void> {
     await this.step(`open plans page for ${destination}`, async () => {
-      await this.page.goto(this.routeFor(destination));
+      await this.goto(this.routeFor(destination));
       await this.dismissCookieBanner();
     });
   }
